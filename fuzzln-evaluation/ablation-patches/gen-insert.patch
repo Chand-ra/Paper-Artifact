@@ -1,0 +1,43 @@
+diff --git a/fuzzln-ir-mutator/src/lib.rs b/fuzzln-ir-mutator/src/lib.rs
+index f31298b..88c3b1e 100644
+--- a/fuzzln-ir-mutator/src/lib.rs
++++ b/fuzzln-ir-mutator/src/lib.rs
+@@ -42,8 +42,8 @@ use rand::{RngExt, SeedableRng, seq::IteratorRandom};
+ use fuzzln_ir::generators::AnyGenerator;
+ use fuzzln_ir::minimizers::{CommonSubexpressionEliminator, DeadCodeEliminator, Minimizer};
+ use fuzzln_ir::mutators::{
+-    GeneratorInsertionMutator, InputSwapMutator, InstructionDeleteMutator,
+-    InstructionReorderMutator, OperationParamMutator, SpliceInsertionMutator,
++    InputSwapMutator, InstructionDeleteMutator, InstructionReorderMutator, OperationParamMutator,
++    SpliceInsertionMutator,
+ };
+ use fuzzln_ir::{Generator, Mutator, Program, ProgramBuilder};
+ 
+@@ -102,9 +102,9 @@ impl MutatorState {
+         let splice_insert_mutator = splice.map(SpliceInsertionMutator::new);
+         // Only roll up to 6 if we actually have a splice input.
+         let upper_bound = if splice_insert_mutator.is_some() {
+-            6
+-        } else {
+             5
++        } else {
++            4
+         };
+         for _ in 0..stack {
+             // Uniform pick between the available mutators.
+@@ -126,15 +126,6 @@ impl MutatorState {
+                     "instr-reorder"
+                 }
+                 4 => {
+-                    let generator = *AnyGenerator::ALL
+-                        .iter()
+-                        .choose(&mut self.rng)
+-                        .expect("AnyGenerator::ALL is non-empty");
+-                    let mutator = GeneratorInsertionMutator::new(generator);
+-                    mutator.mutate(program, &mut self.rng);
+-                    "gen-insert"
+-                }
+-                5 => {
+                     splice_insert_mutator
+                         .as_ref()
+                         .expect("splice present")
