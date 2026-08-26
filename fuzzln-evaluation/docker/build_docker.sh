@@ -1,10 +1,15 @@
 #!/bin/bash
-# docker/build_all.sh
+# docker/build_docker.sh
 #
 # Builds one Docker image per bug per scenario. Needed for the survival
 # campaigns, the coverage one handles docker image creation on its own.
 #
-# Run from the FuzzLN repo root: bash fuzzln-evaluation/docker/build_all.sh
+# Run from the FuzzLN repo root: bash fuzzln-evaluation/docker/build_docker.sh
+#
+# Pass a bug name as the first argument to build only that bug's images
+# instead of all 20, e.g.: bash fuzzln-evaluation/docker/build_docker.sh send_tlvs
+# Bug names are unique across targets, so the name alone is enough to resolve
+# which bugs/<target>/<bug> directory to build.
 
 set -euo pipefail
 
@@ -21,7 +26,24 @@ SCENARIOS=("encrypted_bytes" "ir")
 # on subsequent runs when the patch is already applied.
 git -C "$FUZZLN_DIR" apply "$EVAL_DIR/docker/stdio-inherit.patch" 2>/dev/null || true
 
-for meta_file in "$VULNS_DIR"/*/*/metadata.json; do
+BUG_FILTER="${1:-}"
+
+if [ -n "$BUG_FILTER" ]; then
+    # shellcheck disable=SC2206
+    META_FILES=("$VULNS_DIR"/*/"$BUG_FILTER"/metadata.json)
+    if [ ! -e "${META_FILES[0]}" ]; then
+        echo "ERROR: no bug named '$BUG_FILTER' found under $VULNS_DIR/*/$BUG_FILTER/metadata.json" >&2
+        exit 1
+    fi
+    if [ "${#META_FILES[@]}" -gt 1 ]; then
+        echo "ERROR: bug name '$BUG_FILTER' is ambiguous (matched ${#META_FILES[@]} directories)" >&2
+        exit 1
+    fi
+else
+    META_FILES=("$VULNS_DIR"/*/*/metadata.json)
+fi
+
+for meta_file in "${META_FILES[@]}"; do
     target=$(python3 -c "import json,sys; print(json.load(open('$meta_file'))['target'])")
     bug=$(python3 -c "import json,sys; print(json.load(open('$meta_file'))['bug'])")
     commit=$(python3 -c "import json,sys; print(json.load(open('$meta_file'))['buggy_commit'])")
