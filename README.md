@@ -137,8 +137,13 @@ scripts/
 
 ## Evaluation Environment
 
-The paper's evaluation campaigns (see `fuzzln-evaluation/`) were run with the
-following pinned environment, for reproducibility:
+The paper's evaluation campaigns (see
+[`fuzzln-evaluation/`](fuzzln-evaluation/README.md)) were run with the following pinned
+environment, for reproducibility. Reviewers looking to reproduce or verify the paper's
+results (the ground-truth bug benchmark, TTE/coverage campaigns, and analysis scripts
+behind Tables 2-4) should start at
+[`fuzzln-evaluation/README.md`](fuzzln-evaluation/README.md), which maps each paper
+result to the scripts that reproduce it.
 
 - **AFL++ commit:** [`ad5304010ae3be9d5cdc1ba51b09e14169c5cb87`](https://github.com/AFLplusplus/AFLplusplus/commit/ad5304010ae3be9d5cdc1ba51b09e14169c5cb87)
 - **Kernel:** Linux 5.15.0-186-generic (Ubuntu, x86_64)

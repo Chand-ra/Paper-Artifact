@@ -18,6 +18,12 @@ marked with an `EXCLUDED.md` file in their own directory (e.g.
 [ldk/balance_underflow/EXCLUDED.md](ldk/balance_underflow/EXCLUDED.md)); their
 `flag.patch`, `metadata.json`, and any PoC files are unchanged.
 
+These 17 bugs are what the paper's TTE (Table 2 / RQ1) campaign was run against. That
+campaign uses a specific 5-mutator build of `fuzzln-ir-mutator` (the full 6-mutator stack
+minus `SpliceInsertionMutator`) — see [Mutator
+Configurations](../README.md#mutator-configurations) in the parent README for how to
+build it before running `orchestrator/survival-orchestrator.py`.
+
 ## Per-target bug list
 
 ### CLN (5/5 included)
