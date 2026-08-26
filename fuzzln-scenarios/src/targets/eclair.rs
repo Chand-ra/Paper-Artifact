@@ -11,9 +11,9 @@ use std::process::{Command, Stdio};
 use std::time::Duration;
 
 use bitcoin::secp256k1;
-use serde::Deserialize;
 use fuzzln::bitcoin::BitcoinCli;
 use fuzzln::process::ManagedProcess;
+use serde::Deserialize;
 
 use super::bitcoind;
 use super::{Target, TargetError, check_crash_log};

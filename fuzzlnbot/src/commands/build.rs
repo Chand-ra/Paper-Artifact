@@ -1,4 +1,4 @@
-//! Docker image builds for FuzzLN workloads.
+//! Docker image builds for `FuzzLN` workloads.
 //! The command keeps Docker's output visible so rebuild failures are easy to debug.
 
 use std::path::PathBuf;
@@ -44,7 +44,7 @@ pub struct BuildInputs {
     pub image: String,
     /// Workload Dockerfile selected from the resolved target and the coverage flag.
     pub dockerfile: PathBuf,
-    /// FuzzLN repository root used as the Docker build context.
+    /// `FuzzLN` repository root used as the Docker build context.
     pub fuzzln_dir: PathBuf,
     /// Scenario passed to Docker as `--build-arg SCENARIO=...`.
     pub scenario: String,
@@ -114,7 +114,7 @@ impl BuildInputs {
 }
 
 impl BuildCommand {
-    /// Builds the requested FuzzLN Docker image and returns whether Docker succeeded.
+    /// Builds the requested `FuzzLN` Docker image and returns whether Docker succeeded.
     pub fn execute(args: &BuildArgs) -> bool {
         let config = match &args.config {
             Some(path) => match CampaignConfig::load(path) {
@@ -162,7 +162,7 @@ pub fn run_build(inputs: &BuildInputs) -> bool {
     true
 }
 
-/// Returns the default image tag used by FuzzLN's manual Docker build flow.
+/// Returns the default image tag used by `FuzzLN`'s manual Docker build flow.
 fn default_workload_image_tag(target: Target, scenario: &str, coverage: bool) -> String {
     let suffix = if coverage { "-coverage" } else { "" };
     format!("fuzzln-{target}-{scenario}{suffix}")

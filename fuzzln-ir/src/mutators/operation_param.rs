@@ -1,8 +1,8 @@
 //! Mutator that tweaks embedded literal values in Load and Extract operations.
 
+use fuzzln::bolt::{MAX_MESSAGE_SIZE, ShortChannelId};
 use rand::seq::IteratorRandom;
 use rand::{Rng, RngExt};
-use fuzzln::bolt::{MAX_MESSAGE_SIZE, ShortChannelId};
 
 use super::Mutator;
 use crate::operation::{AcceptChannelField, ChannelTypeVariant, ShutdownScriptVariant};

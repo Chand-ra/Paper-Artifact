@@ -25,13 +25,13 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Commands {
-    /// Build FuzzLN workload Docker images.
+    /// Build `FuzzLN` workload Docker images.
     Build(BuildArgs),
     /// Validate a campaign configuration file.
     Config(ConfigArgs),
     /// Manage fuzzing corpus: merge runner queues or minimize with `afl-cmin`.
     Corpus(CorpusArgs),
-    /// Validate host prerequisites for running FuzzLN campaigns.
+    /// Validate host prerequisites for running `FuzzLN` campaigns.
     Doctor(DoctorArgs),
     /// Decode a fuzzer input and print it as readable IR.
     PrintIr(PrintIrArgs),

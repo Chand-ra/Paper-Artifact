@@ -12,9 +12,9 @@ use std::fmt;
 use std::fmt::Write;
 
 use bitcoin::{opcodes::all as opcodes, script::Builder, script::PushBytes};
+use fuzzln::bolt::ShortChannelId;
 use rand::{Rng, RngExt};
 use serde::{Deserialize, Serialize};
-use fuzzln::bolt::ShortChannelId;
 
 use super::VariableType;
 

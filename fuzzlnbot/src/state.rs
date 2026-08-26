@@ -31,7 +31,7 @@ pub struct CampaignState {
     pub output_dir: PathBuf,
     /// Path to the Nyx sharedir.
     pub sharedir: PathBuf,
-    /// FuzzLN repository git hash at campaign start.
+    /// `FuzzLN` repository git hash at campaign start.
     pub fuzzln_git_hash: String,
     /// Unix timestamp (seconds since epoch) when the campaign started.
     pub start_time: u64,

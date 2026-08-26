@@ -310,6 +310,88 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "645cbb3a84e60b7531617d5ae4e57f7e27308f6445f5abf653209ea76dec8dff"
 
 [[package]]
+name = "fuzzln"
+version = "0.0.0"
+dependencies = [
+ "bitcoin",
+ "chacha20poly1305",
+ "fuzzln-nyx-sys",
+ "hex",
+ "log",
+ "nix",
+ "serde",
+ "serde_json",
+ "simple_logger",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
+name = "fuzzln-ir"
+version = "0.0.0"
+dependencies = [
+ "bitcoin",
+ "fuzzln",
+ "postcard",
+ "rand",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "fuzzln-ir-mutator"
+version = "0.0.0"
+dependencies = [
+ "fuzzln-ir",
+ "log",
+ "postcard",
+ "rand",
+ "simple_logger",
+]
+
+[[package]]
+name = "fuzzln-nyx-sys"
+version = "0.0.0"
+dependencies = [
+ "cc",
+]
+
+[[package]]
+name = "fuzzln-scenarios"
+version = "0.0.0"
+dependencies = [
+ "bitcoin",
+ "fuzzln",
+ "fuzzln-ir",
+ "fuzzln-nyx-sys",
+ "hex",
+ "libc",
+ "log",
+ "postcard",
+ "serde",
+ "serde_json",
+ "simple_logger",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
+name = "fuzzlnbot"
+version = "0.0.0"
+dependencies = [
+ "clap",
+ "fuzzln-ir",
+ "log",
+ "postcard",
+ "serde",
+ "serde_json",
+ "simple_logger",
+ "tempfile",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -609,88 +691,6 @@ checksum = "291bee647ce7310b0ea721bfd7e0525517b4468eb7c7e15eb8bd774343179702"
 dependencies = [
  "log",
  "windows-sys",
-]
-
-[[package]]
-name = "fuzzln"
-version = "0.0.0"
-dependencies = [
- "bitcoin",
- "chacha20poly1305",
- "hex",
- "log",
- "nix",
- "serde",
- "serde_json",
- "simple_logger",
- "fuzzln-nyx-sys",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "fuzzln-ir"
-version = "0.0.0"
-dependencies = [
- "bitcoin",
- "postcard",
- "rand",
- "serde",
- "fuzzln",
- "thiserror",
-]
-
-[[package]]
-name = "fuzzln-ir-mutator"
-version = "0.0.0"
-dependencies = [
- "log",
- "postcard",
- "rand",
- "simple_logger",
- "fuzzln-ir",
-]
-
-[[package]]
-name = "fuzzln-nyx-sys"
-version = "0.0.0"
-dependencies = [
- "cc",
-]
-
-[[package]]
-name = "fuzzln-scenarios"
-version = "0.0.0"
-dependencies = [
- "bitcoin",
- "hex",
- "libc",
- "log",
- "postcard",
- "serde",
- "serde_json",
- "simple_logger",
- "fuzzln",
- "fuzzln-ir",
- "fuzzln-nyx-sys",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "fuzzlnbot"
-version = "0.0.0"
-dependencies = [
- "clap",
- "log",
- "postcard",
- "serde",
- "serde_json",
- "simple_logger",
- "fuzzln-ir",
- "tempfile",
- "thiserror",
- "toml",
 ]
 
 [[package]]

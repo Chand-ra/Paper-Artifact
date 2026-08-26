@@ -1,6 +1,6 @@
 //! Core library for the fuzzln coverage-guided fuzzing framework.
 //!
-//! FuzzLN finds bugs in Lightning Network implementations by sending
+//! `FuzzLN` finds bugs in Lightning Network implementations by sending
 //! fuzz-derived protocol messages to target nodes (LND, LDK, CLN, Eclair)
 //! and checking whether they crash or violate invariants. This crate
 //! provides the building blocks that scenarios and targets are built on.
