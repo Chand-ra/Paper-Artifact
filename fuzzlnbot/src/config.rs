@@ -111,7 +111,7 @@ impl CampaignConfig {
         format!("{}-{}-{epoch_secs}", self.target, self.scenario)
     }
 
-    /// Returns the Docker image tag, using the FuzzLN convention as the default.
+    /// Returns the Docker image tag, using the `FuzzLN` convention as the default.
     #[must_use]
     pub fn image_tag(&self) -> String {
         self.image

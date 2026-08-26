@@ -1968,7 +1968,7 @@ mod tests {
         sk_bytes[31] = 0x42;
         let rgb_color = [0x11, 0x22, 0x33];
         let mut alias = [0u8; 32];
-        alias[..5].copy_from_slice(b"fuzzln");
+        alias[..6].copy_from_slice(b"fuzzln");
         let addresses = vec![0xaa, 0xbb, 0xcc];
 
         let instrs = vec![

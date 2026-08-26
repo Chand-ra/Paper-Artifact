@@ -9,10 +9,10 @@ mod lnd;
 pub use bitcoind::INITIAL_BLOCKS;
 pub use cln::{ClnConfig, ClnTarget};
 pub use eclair::{EclairConfig, EclairTarget};
-pub use ldk::{LdkConfig, LdkTarget};
-pub use lnd::{LndConfig, LndTarget};
 use fuzzln::bitcoin::BitcoinCli;
 use fuzzln::scenarios::TargetError;
+pub use ldk::{LdkConfig, LdkTarget};
+pub use lnd::{LndConfig, LndTarget};
 
 use bitcoin::secp256k1;
 use std::net::SocketAddr;

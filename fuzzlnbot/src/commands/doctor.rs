@@ -1,4 +1,4 @@
-//! Host prerequisite checks for FuzzLN fuzzing campaigns.
+//! Host prerequisite checks for `FuzzLN` fuzzing campaigns.
 //! The output is intentionally stable so CI and operators can diff or parse it.
 
 use std::fs;
@@ -62,7 +62,7 @@ pub struct DoctorArgs {
 struct DoctorInputs {
     /// Path to the AFL++ source tree.
     aflpp_root: PathBuf,
-    /// FuzzLN repository root for checking scripts and Dockerfiles.
+    /// `FuzzLN` repository root for checking scripts and Dockerfiles.
     fuzzln_dir: PathBuf,
 }
 
@@ -466,7 +466,10 @@ mod tests {
     fn require_exists_reports_missing_path() {
         let path = Path::new("/definitely/not/a/fuzzlnbot/path");
         let err = require_exists(path).unwrap_err();
-        assert_eq!(err.to_string(), "/definitely/not/a/fuzzlnbot/path not found");
+        assert_eq!(
+            err.to_string(),
+            "/definitely/not/a/fuzzlnbot/path not found"
+        );
     }
 
     #[test]

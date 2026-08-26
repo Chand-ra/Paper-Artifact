@@ -1,4 +1,4 @@
-//! FuzzLN IR: intermediate representation for structured Lightning protocol
+//! `FuzzLN` IR: intermediate representation for structured Lightning protocol
 //! fuzzing.
 //!
 //! This crate defines the IR types, generators, and mutators used to produce

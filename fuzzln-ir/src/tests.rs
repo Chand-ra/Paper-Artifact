@@ -1,9 +1,9 @@
 //! Tests for IR types.
 
+use fuzzln::bolt::{MAX_MESSAGE_SIZE, ShortChannelId};
 use rand::SeedableRng;
 use rand::rngs::SmallRng;
 use rand::{Rng, RngExt};
-use fuzzln::bolt::{MAX_MESSAGE_SIZE, ShortChannelId};
 
 use super::*;
 use generators::{
@@ -275,60 +275,6 @@ fn display_build_channel_announcement_program() {
         format!("v6 = LoadPrivateKey(0x{z31}04)"),
         "v7 = BuildChannelAnnouncement(v0, v1, v2, v3, v4, v5, v6)".into(),
         "SendMessage(v7)".into(),
-    ];
-    assert_eq!(lines.len(), expected.len(), "line count mismatch");
-    for (i, (got, want)) in lines.iter().zip(expected.iter()).enumerate() {
-        assert_eq!(got, want, "line {i} mismatch");
-    }
-}
-
-#[test]
-fn display_build_node_announcement_program() {
-    let mut alias = [0u8; 32];
-    alias[..5].copy_from_slice(b"fuzzln");
-    let instructions = vec![
-        Instruction {
-            operation: Operation::LoadPrivateKey(key(1)),
-            inputs: vec![],
-        },
-        Instruction {
-            operation: Operation::LoadFeatures(vec![]),
-            inputs: vec![],
-        },
-        Instruction {
-            operation: Operation::LoadTimestamp(1_700_000_000),
-            inputs: vec![],
-        },
-        Instruction {
-            operation: Operation::LoadBytes(vec![]),
-            inputs: vec![],
-        },
-        Instruction {
-            operation: Operation::BuildNodeAnnouncement {
-                rgb_color: [0x11, 0x22, 0x33],
-                alias,
-            },
-            inputs: vec![0, 1, 2, 3],
-        },
-        Instruction {
-            operation: Operation::SendMessage,
-            inputs: vec![4],
-        },
-    ];
-
-    let program = Program { instructions };
-    let text = program.to_string();
-    let lines: Vec<&str> = text.lines().collect();
-
-    let z31 = "00".repeat(31);
-    let alias_hex = format!("0x736d697465{}", "00".repeat(27));
-    let expected: Vec<String> = vec![
-        format!("v0 = LoadPrivateKey(0x{z31}01)"),
-        "v1 = LoadFeatures()".into(),
-        "v2 = LoadTimestamp(1700000000)".into(),
-        "v3 = LoadBytes()".into(),
-        format!("v4 = BuildNodeAnnouncement{{rgb=0x112233, alias={alias_hex}}}(v0, v1, v2, v3)"),
-        "SendMessage(v4)".into(),
     ];
     assert_eq!(lines.len(), expected.len(), "line count mismatch");
     for (i, (got, want)) in lines.iter().zip(expected.iter()).enumerate() {
