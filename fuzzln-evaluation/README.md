@@ -10,7 +10,7 @@ up, this directory only adds what's needed to *evaluate* it.
 | Paper result | RQ | Reproduced by |
 |---|---|---|
 | Table 2 (time-to-exposure / TTE results) | RQ1 | [`orchestrator/survival-orchestrator.py`](orchestrator/survival-orchestrator.py) to run trials (built against the [ground-truth mutator variant](#mutator-configurations)), then [`analysis/survival_analysis.py`](analysis/survival_analysis.py) to analyze them |
-| Table 3 (coverage results) | RQ3/RQ4 | [`orchestrator/coverage-orchestator.py`](orchestrator/coverage-orchestator.py) to run trials, then [`analysis/coverage_analysis.py`](analysis/coverage_analysis.py) to analyze them |
+| Table 3 (coverage results) | RQ3/RQ4 | [`orchestrator/coverage-orchestrator.py`](orchestrator/coverage-orchestrator.py) to run trials, then [`analysis/coverage_analysis.py`](analysis/coverage_analysis.py) to analyze them |
 | Table 4 (mutator ablation) | RQ5 | same coverage pipeline, built against [`ablation-patches/`](ablation-patches/) variants — see [Mutator Configurations](#mutator-configurations) and [Reproducing Tables 3 & 4](#reproducing-tables-3--4-coverage--rq3-rq4-rq5) below |
 
 ## Directory structure
@@ -37,7 +37,7 @@ fuzzln-evaluation/
 │   └── ir/<target>/                # Structured IR seed corpus, per target
 ├── orchestrator/
 │   ├── survival-orchestrator.py    # TTE campaign runner -> Table 2
-│   └── coverage-orchestator.py     # Coverage campaign runner -> Tables 3 & 4
+│   └── coverage-orchestrator.py     # Coverage campaign runner -> Tables 3 & 4
 ├── analysis/
 │   ├── survival_analysis.py   # Kaplan-Meier, log-rank, Holm-Bonferroni -> Table 2
 │   ├── coverage_analysis.py   # Mann-Whitney, Vargha-Delaney, ablation -> Tables 3 & 4
@@ -231,7 +231,7 @@ git apply -R fuzzln-evaluation/ablation-patches/splice.patch
 
    ```bash
    # Baseline: raw-bytes scenario, no IR mutator involved
-   python3 fuzzln-evaluation/orchestrator/coverage-orchestator.py \
+   python3 fuzzln-evaluation/orchestrator/coverage-orchestrator.py \
      --out-dir /path/to/coverage-out \
      --configs encrypted_bytes:/path/to/fuzzln-checkout \
      --scenario encrypted_bytes \
@@ -242,7 +242,7 @@ git apply -R fuzzln-evaluation/ablation-patches/splice.patch
      --timeout 86400
 
    # Full IR mutator stack
-   python3 fuzzln-evaluation/orchestrator/coverage-orchestator.py \
+   python3 fuzzln-evaluation/orchestrator/coverage-orchestrator.py \
      --out-dir /path/to/coverage-out \
      --configs ir-full-stack:/path/to/fuzzln-full-stack \
      --scenario ir \
@@ -254,7 +254,7 @@ git apply -R fuzzln-evaluation/ablation-patches/splice.patch
 
    # Table 4's four ablations, one invocation per mutator (same --scenario ir, a
    # differently-patched checkout and a distinct label each time)
-   python3 fuzzln-evaluation/orchestrator/coverage-orchestator.py \
+   python3 fuzzln-evaluation/orchestrator/coverage-orchestrator.py \
      --out-dir /path/to/coverage-out \
      --configs ir-splice:/path/to/fuzzln-ablate-splice \
      --scenario ir \
