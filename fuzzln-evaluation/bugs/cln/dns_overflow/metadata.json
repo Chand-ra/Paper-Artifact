@@ -3,7 +3,7 @@
   "target": "cln",
   "buggy_commit": "ad2dc972debc35d43f3c0f629fe70899352926df",
   "patch_commit": "c425de385cc8cb18cc2fd266e8a5ea746d3b2fb9",
-  "sanitizer": "UBSan",
+  "PR/Issue": "https://github.com/ElementsProject/lightning/pull/8325",
   "flag_identifier": "FUZZLN_FLAG_DNS_OVERFLOW",
   "poc_found_by_config": [
     "encrypted_bytes",

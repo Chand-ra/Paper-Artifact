@@ -3,7 +3,7 @@
   "target": "ldk",
   "buggy_commit": "3b6a361ae76a087ac10c2e59f9163188fd5c20e1",
   "patch_commit": "7f24e833fb97155844be2866ba2229104c12e020",
-  "sanitizer": "abort",
+  "PR/Issue": "https://github.com/lightningdevkit/rust-lightning/issues/2804",
   "flag_identifier": "FUZZLN_FLAG_REACHABLE_UNWRAP",
   "poc_found_by_config": [
     "ir"
