@@ -67,28 +67,28 @@ RUN java -cp target/eclair-sancov-0.0.0.jar EclairEdgeCounter \
     > /tmp/eclair-edge-count.txt && \
     echo "Eclair edge count: $(cat /tmp/eclair-edge-count.txt)"
 
-# Copy smite workspace files and build all scenario binaries
-WORKDIR /smite
+# Copy fuzzln workspace files and build all scenario binaries
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN set -eu; for f in smite-scenarios/src/bin/eclair_*.rs; do \
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN set -eu; for f in fuzzln-scenarios/src/bin/eclair_*.rs; do \
         TARGET_MAP_SIZE=$(cat /tmp/eclair-edge-count.txt) \
-            cargo build -p smite-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
+            cargo build -p fuzzln-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
     done
 
 # Build JVM crash handler shared libraries, LD_PRELOADed into the JVM to
 # report crashes before atexit handlers close TCP sockets. Two variants:
 #   nyx-jvm-crash-handler.so - reports crashes via Nyx hypercalls
-#   jvm-crash-handler.so     - writes /tmp/smite-crash.log for local mode
+#   jvm-crash-handler.so     - writes /tmp/fuzzln-crash.log for local mode
 RUN cc -shared -fPIC -DENABLE_NYX -DNO_PT_NYX \
-    smite-nyx-sys/src/jvm-crash-handler.c -o /nyx-jvm-crash-handler.so && \
+    fuzzln-nyx-sys/src/jvm-crash-handler.c -o /nyx-jvm-crash-handler.so && \
     cc -shared -fPIC \
-    smite-nyx-sys/src/jvm-crash-handler.c -o /jvm-crash-handler.so
+    fuzzln-nyx-sys/src/jvm-crash-handler.c -o /jvm-crash-handler.so
 
 # Runtime image.
 FROM eclipse-temurin:21-jre
@@ -112,10 +112,10 @@ COPY --from=builder /usr/local/lib/libeclair-sancov.so /usr/local/lib/libeclair-
 
 # Copy crash handlers and eclair scenario binary
 COPY --from=builder /nyx-jvm-crash-handler.so /jvm-crash-handler.so /
-COPY --from=builder /smite/target/release/eclair_${SCENARIO} /eclair-scenario
+COPY --from=builder /fuzzln/target/release/eclair_${SCENARIO} /eclair-scenario
 
 # Default to the local crash handler; init.sh overrides with the Nyx version.
-ENV SMITE_CRASH_HANDLER=/jvm-crash-handler.so
+ENV FUZZLN_CRASH_HANDLER=/jvm-crash-handler.so
 
 # Copy init script
 COPY workloads/eclair/init.sh /init.sh

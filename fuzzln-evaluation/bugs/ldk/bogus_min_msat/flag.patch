@@ -1,0 +1,10 @@
+--- a/lightning/src/ln/channel.rs	2026-07-31 04:50:12.790138143 +0000
++++ b/lightning/src/ln/channel.rs	2026-07-31 04:55:08.927661346 +0000
+@@ -7723,6 +7723,7 @@
+ 			return Err(ChannelError::close("Remote side tried to send a 0-msat HTLC".to_owned()));
+ 		}
+ 		if msg.amount_msat < self.context.holder_htlc_minimum_msat {
++            		panic!("FUZZLN_FLAG_BOGUS_MIN_MSAT");
+ 			return Err(ChannelError::close(format!("Remote side tried to send less than our minimum HTLC value. Lower limit: ({}). Actual: ({})", self.context.holder_htlc_minimum_msat, msg.amount_msat)));
+ 		}
+ 		if self.context.next_counterparty_htlc_id != msg.htlc_id {

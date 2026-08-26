@@ -91,15 +91,15 @@ RUN CC=clang-${LLVM_V} \
 RUN make -j$(nproc) install
 
 # Build cln-scenario (uses LocalRunner for coverage, no nyx feature needed).
-WORKDIR /smite
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN cargo build -p smite-scenarios --bin cln_${SCENARIO} --release
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN cargo build -p fuzzln-scenarios --bin cln_${SCENARIO} --release
 
 # Runtime image
 FROM debian:bookworm-slim
@@ -135,7 +135,7 @@ COPY --from=builder /usr/local/bin/bitcoind /usr/local/bin/bitcoind
 COPY --from=builder /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
 
 # Copy the cln-scenario binary
-COPY --from=builder /smite/target/release/cln_${SCENARIO} /cln-scenario
+COPY --from=builder /fuzzln/target/release/cln_${SCENARIO} /cln-scenario
 
 # Copy CLN source for annotated HTML report generation.
 # Paths must match build paths since they are embedded in the instrumented binary.

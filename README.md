@@ -1,6 +1,6 @@
-# Smite
+# FuzzLN
 
-Smite is a coverage-guided fuzzing framework for Lightning Network implementations, derived from [fuzzamoto](https://github.com/dergoegge/fuzzamoto).
+FuzzLN is a coverage-guided fuzzing framework for Lightning Network implementations, derived from [fuzzamoto](https://github.com/dergoegge/fuzzamoto).
 
 ## Supported Targets
 
@@ -26,20 +26,20 @@ TARGET=lnd
 SCENARIO=encrypted_bytes
 
 # Build the Docker image
-docker build -t smite-$TARGET-$SCENARIO -f workloads/$TARGET/Dockerfile --build-arg SCENARIO=$SCENARIO .
+docker build -t fuzzln-$TARGET-$SCENARIO -f workloads/$TARGET/Dockerfile --build-arg SCENARIO=$SCENARIO .
 
 # Enable the KVM VMware backdoor (required for Nyx)
 ./scripts/enable-vmware-backdoor.sh
 
 # Create the Nyx sharedir
-./scripts/setup-nyx.sh /tmp/smite-nyx smite-$TARGET-$SCENARIO ~/AFLplusplus
+./scripts/setup-nyx.sh /tmp/fuzzln-nyx fuzzln-$TARGET-$SCENARIO ~/AFLplusplus
 
 # Create seed corpus
-mkdir -p /tmp/smite-seeds
-echo 'AAAA' > /tmp/smite-seeds/seed1
+mkdir -p /tmp/fuzzln-seeds
+echo 'AAAA' > /tmp/fuzzln-seeds/seed1
 
 # Start fuzzing
-~/AFLplusplus/afl-fuzz -X -i /tmp/smite-seeds -o /tmp/smite-out -- /tmp/smite-nyx
+~/AFLplusplus/afl-fuzz -X -i /tmp/fuzzln-seeds -o /tmp/fuzzln-out -- /tmp/fuzzln-nyx
 ```
 
 ### IR Scenario
@@ -52,21 +52,21 @@ TARGET=ldk
 SCENARIO=ir
 
 # Build the Docker image and Nyx sharedir as above
-docker build -t smite-$TARGET-$SCENARIO -f workloads/$TARGET/Dockerfile --build-arg SCENARIO=$SCENARIO .
-./scripts/setup-nyx.sh /tmp/smite-nyx smite-$TARGET-$SCENARIO ~/AFLplusplus
+docker build -t fuzzln-$TARGET-$SCENARIO -f workloads/$TARGET/Dockerfile --build-arg SCENARIO=$SCENARIO .
+./scripts/setup-nyx.sh /tmp/fuzzln-nyx fuzzln-$TARGET-$SCENARIO ~/AFLplusplus
 
 # Build the custom mutator
-cargo build --release -p smite-ir-mutator
+cargo build --release -p fuzzln-ir-mutator
 
 # Create seed corpus (an empty file works -- the mutator generates fresh programs)
-mkdir -p /tmp/smite-seeds
-printf '\x00' > /tmp/smite-seeds/empty
+mkdir -p /tmp/fuzzln-seeds
+printf '\x00' > /tmp/fuzzln-seeds/empty
 
 # Start fuzzing with the custom mutator
-AFL_CUSTOM_MUTATOR_LIBRARY=target/release/libsmite_ir_mutator.so \
+AFL_CUSTOM_MUTATOR_LIBRARY=target/release/libfuzzln_ir_mutator.so \
 AFL_CUSTOM_MUTATOR_ONLY=1 \
 AFL_FRAMESHIFT_DISABLE=1 \
-~/AFLplusplus/afl-fuzz -X -i /tmp/smite-seeds -o /tmp/smite-out -- /tmp/smite-nyx
+~/AFLplusplus/afl-fuzz -X -i /tmp/fuzzln-seeds -o /tmp/fuzzln-out -- /tmp/fuzzln-nyx
 ```
 
 `AFL_CUSTOM_MUTATOR_ONLY=1` disables AFL++'s built-in mutators (which would
@@ -95,10 +95,10 @@ When AFL++ finds a crash:
 
 ```bash
 # Get the crash input
-cp /tmp/smite-out/default/crashes/<crashing-input> ./crash
+cp /tmp/fuzzln-out/default/crashes/<crashing-input> ./crash
 
 # Reproduce in local mode (use the matching image and scenario binary)
-docker run --rm -v $PWD/crash:/input.bin -e SMITE_INPUT=/input.bin smite-$TARGET-$SCENARIO /$TARGET-scenario
+docker run --rm -v $PWD/crash:/input.bin -e FUZZLN_INPUT=/input.bin fuzzln-$TARGET-$SCENARIO /$TARGET-scenario
 ```
 
 ### Coverage Report Mode
@@ -107,7 +107,7 @@ Generate an HTML coverage report showing which parts of the target were exercise
 
 ```bash
 # Generate coverage report
-./scripts/coverage-report.sh $TARGET $SCENARIO /tmp/smite-out/default/queue/
+./scripts/coverage-report.sh $TARGET $SCENARIO /tmp/fuzzln-out/default/queue/
 
 # View the report
 firefox ./$TARGET-$SCENARIO-coverage-report/html/index.html
@@ -116,12 +116,13 @@ firefox ./$TARGET-$SCENARIO-coverage-report/html/index.html
 ## Project Structure
 
 ```
-smite/              # Core Rust library (runners, scenarios, noise protocol, BOLT messages)
-smitebot/           # Automation CLI for fuzzing campaign orchestration 
-smite-ir/           # IR types, generators, and mutators for structured fuzzing programs
-smite-ir-mutator/   # AFL++ custom mutator cdylib for IR programs
-smite-nyx-sys/      # Nyx FFI bindings
-smite-scenarios/    # Scenario implementations and target binaries
+fuzzln/              # Core Rust library (runners, scenarios, noise protocol, BOLT messages)
+fuzzlnbot/           # Automation CLI for fuzzing campaign orchestration 
+fuzzln-ir/           # IR types, generators, and mutators for structured fuzzing programs
+fuzzln-ir-mutator/   # AFL++ custom mutator cdylib for IR programs
+fuzzln-nyx-sys/      # Nyx FFI bindings
+fuzzln-scenarios/    # Scenario implementations and target binaries
+fuzzln-evaluation/   # Ground-truth bug benchmark, orchestration, and analysis scripts for the paper's evaluation
 workloads/
   lnd/              # LND fuzzing workload (Dockerfile, init script)
   ldk/              # LDK fuzzing workload (Dockerfile, init script, ldk-node wrapper)
@@ -133,3 +134,13 @@ scripts/
   coverage-report.sh        # Generate a coverage report for any scenario
   symbolize-crash.sh        # Symbolize CLN crash report stack traces
 ```
+
+## Evaluation Environment
+
+The paper's evaluation campaigns (see `fuzzln-evaluation/`) were run with the
+following pinned environment, for reproducibility:
+
+- **AFL++ commit:** [`ad5304010ae3be9d5cdc1ba51b09e14169c5cb87`](https://github.com/AFLplusplus/AFLplusplus/commit/ad5304010ae3be9d5cdc1ba51b09e14169c5cb87)
+- **Kernel:** Linux 5.15.0-186-generic (Ubuntu, x86_64)
+- **ASLR:** disabled (`kernel.randomize_va_space = 0`)
+- **Host:** bare-metal / VM, not containerized (target binaries under test run inside Docker, per the workloads above; the fuzzing host itself does not)

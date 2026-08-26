@@ -42,7 +42,7 @@ case "$TARGET" in
 esac
 
 # Docker image tag uses dashes (convention), scenario binary is per-target.
-DOCKER_IMAGE="smite-${TARGET}-${SCENARIO}-coverage"
+DOCKER_IMAGE="fuzzln-${TARGET}-${SCENARIO}-coverage"
 SCENARIO_BIN="/${TARGET}-scenario"
 
 # Set coverage environment variables for docker run.
@@ -98,12 +98,12 @@ fi
 # Build coverage image if needed (use REBUILD=1 to force rebuild)
 if [ "${REBUILD:-}" = "1" ] || ! docker image inspect "$DOCKER_IMAGE" >/dev/null 2>&1; then
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-    SMITE_DIR="$(dirname "$SCRIPT_DIR")"
+    FUZZLN_DIR="$(dirname "$SCRIPT_DIR")"
 
     echo "Building coverage Docker image..."
     docker build -t "$DOCKER_IMAGE" \
         --build-arg "SCENARIO=$SCENARIO" \
-        -f "$SMITE_DIR/workloads/${TARGET}/Dockerfile.coverage" "$SMITE_DIR"
+        -f "$FUZZLN_DIR/workloads/${TARGET}/Dockerfile.coverage" "$FUZZLN_DIR"
 fi
 
 # Create output directories (remove old data to avoid mixing with previous runs)
@@ -137,7 +137,7 @@ run_input() {
         docker run --rm "${DOCKER_USER[@]}" \
             -v "$CORPUS_DIR:/corpus:ro" \
             -v "$covdir:/covdata" \
-            -e SMITE_INPUT="/corpus/$input_name" \
+            -e FUZZLN_INPUT="/corpus/$input_name" \
             "${COV_ENV[@]}" \
             "$DOCKER_IMAGE" \
             "$SCENARIO_BIN" >/dev/null 2>&1 || true

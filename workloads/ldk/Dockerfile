@@ -60,18 +60,18 @@ ENV AFL_NO_CFG_FUZZING=1
 ENV RUSTFLAGS="-C target-cpu=x86-64-v3"
 RUN cargo afl build --release
 
-# Copy smite workspace files and build all scenario binaries
-WORKDIR /smite
+# Copy fuzzln workspace files and build all scenario binaries
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN set -eu; for f in smite-scenarios/src/bin/ldk_*.rs; do \
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN set -eu; for f in fuzzln-scenarios/src/bin/ldk_*.rs; do \
         TARGET_PATH=/ldk-wrapper/target/release/ldk-node-wrapper \
-            cargo build -p smite-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
+            cargo build -p fuzzln-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
     done
 
 # Build crash handler shared libraries, LD_PRELOADed into ldk-node-wrapper to
@@ -79,9 +79,9 @@ RUN set -eu; for f in smite-scenarios/src/bin/ldk_*.rs; do \
 #   nyx-crash-handler.so  - reports crashes via Nyx hypercalls
 #   crash-handler.so      - calls _exit(1), for local reproduction
 RUN clang-${LLVM_V} -fPIC -DENABLE_NYX -DNO_PT_NYX -D_GNU_SOURCE \
-    smite-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /nyx-crash-handler.so && \
+    fuzzln-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /nyx-crash-handler.so && \
     clang-${LLVM_V} -fPIC -D_GNU_SOURCE \
-    smite-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /crash-handler.so
+    fuzzln-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /crash-handler.so
 
 # Runtime image
 FROM debian:bookworm-slim
@@ -103,10 +103,10 @@ COPY --from=builder /usr/local/bin/bitcoind /usr/local/bin/bitcoind
 COPY --from=builder /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
 
 # Copy the ldk-scenario binary
-COPY --from=builder /smite/target/release/ldk_${SCENARIO} /ldk-scenario
+COPY --from=builder /fuzzln/target/release/ldk_${SCENARIO} /ldk-scenario
 
 # Default to the local crash handler; init.sh overrides with the Nyx version.
-ENV SMITE_CRASH_HANDLER=/crash-handler.so
+ENV FUZZLN_CRASH_HANDLER=/crash-handler.so
 
 # Copy the init script
 COPY workloads/ldk/init.sh /init.sh

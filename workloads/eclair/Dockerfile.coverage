@@ -53,17 +53,17 @@ RUN find eclair-node/target -name "eclair-node-*-bin.zip" \
         -exec unzip {} -d /opt \; && \
     mv /opt/eclair-node-* /opt/eclair
 
-# Copy smite workspace and build the eclair scenario binary.
+# Copy fuzzln workspace and build the eclair scenario binary.
 # No --features nyx, no TARGET_MAP_SIZE: coverage mode uses LocalRunner.
-WORKDIR /smite
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN cargo build -p smite-scenarios --bin eclair_${SCENARIO} --release
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN cargo build -p fuzzln-scenarios --bin eclair_${SCENARIO} --release
 
 # Runtime image.
 FROM eclipse-temurin:21-jre
@@ -86,7 +86,7 @@ COPY --from=builder /jacoco/lib/jacocoagent.jar /jacocoagent.jar
 COPY --from=builder /jacoco/lib/jacococli.jar /jacococli.jar
 
 # Copy the eclair scenario binary
-COPY --from=builder /smite/target/release/eclair_${SCENARIO} /eclair-scenario
+COPY --from=builder /fuzzln/target/release/eclair_${SCENARIO} /eclair-scenario
 
 # Copy Eclair source files for annotated HTML report generation.
 COPY --from=builder /eclair-src/eclair-core/src/main/scala /eclair-src/eclair-core/src/main/scala

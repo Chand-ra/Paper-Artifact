@@ -1,12 +1,12 @@
 [workspace]
 resolver = "3"
 members = [
-  "smite",
-  "smitebot",
-  "smite-ir",
-  "smite-ir-mutator",
-  "smite-nyx-sys",
-  "smite-scenarios",
+  "fuzzln",
+  "fuzzlnbot",
+  "fuzzln-ir",
+  "fuzzln-ir-mutator",
+  "fuzzln-nyx-sys",
+  "fuzzln-scenarios",
 ]
 exclude = ["workloads/ldk"]
 

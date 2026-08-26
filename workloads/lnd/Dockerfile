@@ -61,18 +61,18 @@ RUN cd cmd/lncli && go build
 COPY ./workloads/lnd/sancov.go /lnd/sancov.go
 RUN cd cmd/lnd && CGO_ENABLED=1 go build -v -tags=libfuzzer -gcflags=all=-d=libfuzzer
 
-# Copy smite workspace files and build all scenario binaries
-WORKDIR /smite
+# Copy fuzzln workspace files and build all scenario binaries
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN set -eu; for f in smite-scenarios/src/bin/lnd_*.rs; do \
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN set -eu; for f in fuzzln-scenarios/src/bin/lnd_*.rs; do \
         TARGET_PATH=/lnd/cmd/lnd/lnd \
-            cargo build -p smite-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
+            cargo build -p fuzzln-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
     done
 
 # Runtime image
@@ -94,7 +94,7 @@ COPY --from=builder /usr/local/bin/bitcoind /usr/local/bin/bitcoind
 COPY --from=builder /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
 
 # Copy the lnd-scenario binary
-COPY --from=builder /smite/target/release/lnd_${SCENARIO} /lnd-scenario
+COPY --from=builder /fuzzln/target/release/lnd_${SCENARIO} /lnd-scenario
 
 # Copy the init script
 COPY ./workloads/lnd/init.sh /init.sh

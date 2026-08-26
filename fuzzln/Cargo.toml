@@ -1,0 +1,36 @@
+[package]
+name = "fuzzln"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+nyx = ["dep:fuzzln-nyx-sys"]
+
+[lints]
+workspace = true
+
+[dependencies]
+log.workspace = true
+simple_logger.workspace = true
+bitcoin.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# Noise protocol crypto dependencies (BOLT 8)
+chacha20poly1305 = { version = "0.10", default-features = false, features = [
+  "alloc",
+] }
+
+fuzzln-nyx-sys = { path = "../fuzzln-nyx-sys", optional = true }
+
+# Process management (Unix only - Windows not supported)
+nix = { version = "0.30", default-features = false, features = [
+  "signal",
+  "process",
+] }
+hex = "0.4"
+
+[dev-dependencies]
+tempfile = "3"

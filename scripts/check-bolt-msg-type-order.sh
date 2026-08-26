@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # This script is called in the CI pipeline. It makes sure that the BOLT message
-# type constants in smite/src/bolt.rs are listed in increasing order.
+# type constants in fuzzln/src/bolt.rs are listed in increasing order.
 # It also makes sure that other code blocks follow that order.
 
 set -eu
 set -o pipefail
 
-FILE=smite/src/bolt.rs
+FILE=fuzzln/src/bolt.rs
 
 order_pub_mod_msg_type() {
     # awk '/start/,/end/ { print }' <file>

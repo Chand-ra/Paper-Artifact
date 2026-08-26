@@ -612,7 +612,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "smite"
+name = "fuzzln"
 version = "0.0.0"
 dependencies = [
  "bitcoin",
@@ -623,43 +623,43 @@ dependencies = [
  "serde",
  "serde_json",
  "simple_logger",
- "smite-nyx-sys",
+ "fuzzln-nyx-sys",
  "tempfile",
  "thiserror",
 ]
 
 [[package]]
-name = "smite-ir"
+name = "fuzzln-ir"
 version = "0.0.0"
 dependencies = [
  "bitcoin",
  "postcard",
  "rand",
  "serde",
- "smite",
+ "fuzzln",
  "thiserror",
 ]
 
 [[package]]
-name = "smite-ir-mutator"
+name = "fuzzln-ir-mutator"
 version = "0.0.0"
 dependencies = [
  "log",
  "postcard",
  "rand",
  "simple_logger",
- "smite-ir",
+ "fuzzln-ir",
 ]
 
 [[package]]
-name = "smite-nyx-sys"
+name = "fuzzln-nyx-sys"
 version = "0.0.0"
 dependencies = [
  "cc",
 ]
 
 [[package]]
-name = "smite-scenarios"
+name = "fuzzln-scenarios"
 version = "0.0.0"
 dependencies = [
  "bitcoin",
@@ -670,15 +670,15 @@ dependencies = [
  "serde",
  "serde_json",
  "simple_logger",
- "smite",
- "smite-ir",
- "smite-nyx-sys",
+ "fuzzln",
+ "fuzzln-ir",
+ "fuzzln-nyx-sys",
  "tempfile",
  "thiserror",
 ]
 
 [[package]]
-name = "smitebot"
+name = "fuzzlnbot"
 version = "0.0.0"
 dependencies = [
  "clap",
@@ -687,7 +687,7 @@ dependencies = [
  "serde",
  "serde_json",
  "simple_logger",
- "smite-ir",
+ "fuzzln-ir",
  "tempfile",
  "thiserror",
  "toml",
