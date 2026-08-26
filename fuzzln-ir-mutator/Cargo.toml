@@ -1,0 +1,18 @@
+[package]
+name = "fuzzln-ir-mutator"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+fuzzln-ir = { path = "../fuzzln-ir" }
+rand.workspace = true
+postcard.workspace = true
+log.workspace = true
+simple_logger.workspace = true

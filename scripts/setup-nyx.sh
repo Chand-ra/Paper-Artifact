@@ -8,7 +8,7 @@
 #   NYX_MEM_MB: Sets the memory allocation for the Nyx VM in MB (default: 2048).
 #
 # Example:
-#   NYX_MEM_MB=4096 ./scripts/setup-nyx.sh /tmp/smite-lnd-nyx smite-lnd ~/AFLplusplus
+#   NYX_MEM_MB=4096 ./scripts/setup-nyx.sh /tmp/fuzzln-lnd-nyx fuzzln-lnd ~/AFLplusplus
 #
 # Creates the necessary files in sharedir for snapshot fuzzing using
 # docker-image.  Requires that docker-image is already built and that AFL++ has
@@ -127,5 +127,5 @@ echo "Contents:"
 ls -lh "$SHAREDIR"
 echo ""
 echo "To start fuzzing, run:"
-echo "  mkdir -p /tmp/smite-seeds && echo 'AAAA' > /tmp/smite-seeds/seed1"
-echo "  $AFLPP_PATH/afl-fuzz -X -i /tmp/smite-seeds -o /tmp/smite-out -- $SHAREDIR"
+echo "  mkdir -p /tmp/fuzzln-seeds && echo 'AAAA' > /tmp/fuzzln-seeds/seed1"
+echo "  $AFLPP_PATH/afl-fuzz -X -i /tmp/fuzzln-seeds -o /tmp/fuzzln-out -- $SHAREDIR"

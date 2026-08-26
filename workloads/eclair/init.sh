@@ -5,13 +5,13 @@
 set -eu
 
 # Run the Eclair fuzzing harness
-export SMITE_NYX=1
+export FUZZLN_NYX=1
 export JAVA_HOME=/opt/java/openjdk
 export PATH=$PATH:/usr/local/bin:/opt/eclair/bin:$JAVA_HOME/bin
 
 # Override the default crash handler with the Nyx version, which reports
 # crashes via Nyx hypercalls instead of writing to a file.
-export SMITE_CRASH_HANDLER=/nyx-jvm-crash-handler.so
+export FUZZLN_CRASH_HANDLER=/nyx-jvm-crash-handler.so
 
 # JVM tuning for Nyx fuzzing performance. JAVA_OPTS is picked up by
 # eclair-node.sh and passed to the JVM.

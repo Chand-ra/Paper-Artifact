@@ -11,7 +11,7 @@ import org.objectweb.asm.Opcodes;
 // Counts the total number of instrumentation probes across all instrumented
 // packages (fr/acinq/, scala/, scodec/).
 //
-// Used at Docker build time to determine TARGET_MAP_SIZE for the smite scenario
+// Used at Docker build time to determine TARGET_MAP_SIZE for the fuzzln scenario
 // binary. Counts the same probes that EclairSanCov.prescan() assigns IDs to:
 // one entry probe per non-abstract, non-native method, plus one probe per
 // conditional branch fall-through and one per label/basic-block entry within

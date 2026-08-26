@@ -1,0 +1,10 @@
+--- a/lightning/src/ln/channel.rs	2026-07-31 10:47:34.219142476 +0000
++++ b/lightning/src/ln/channel.rs	2026-07-31 10:48:34.387453997 +0000
+@@ -3410,6 +3410,7 @@
+ 			return Err(ChannelError::close(format!("dust_limit_satoshis {} was larger than channel_value_satoshis {}. Peer never wants payout outputs?", open_channel_fields.dust_limit_satoshis, channel_value_satoshis)));
+ 		}
+ 		if open_channel_fields.htlc_minimum_msat >= full_channel_value_msat {
++            		panic!("FUZZLN_FLAG_BALANCE_UNDERFLOW");
+ 			return Err(ChannelError::close(format!("Minimum htlc value ({}) was larger than full channel value ({})", open_channel_fields.htlc_minimum_msat, full_channel_value_msat)));
+ 		}
+ 		FundedChannel::<SP>::check_remote_fee(&channel_type, fee_estimator, open_channel_fields.commitment_feerate_sat_per_1000_weight, None, &&logger)?;

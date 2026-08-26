@@ -120,18 +120,18 @@ RUN CC=afl-clang-lto ./configure --prefix=/usr/local --disable-rust \
 COPY workloads/cln/build-cln-lto.sh /tmp/
 RUN chmod +x /tmp/build-cln-lto.sh && /tmp/build-cln-lto.sh
 
-# Copy smite workspace files and build all scenario binaries
-WORKDIR /smite
+# Copy fuzzln workspace files and build all scenario binaries
+WORKDIR /fuzzln
 COPY Cargo.toml Cargo.lock ./
-COPY smite/ smite/
-COPY smite-ir/ smite-ir/
-COPY smite-ir-mutator/ smite-ir-mutator/
-COPY smite-nyx-sys/ smite-nyx-sys/
-COPY smitebot/ smitebot/
-COPY smite-scenarios/ smite-scenarios/
-RUN set -eu; for f in smite-scenarios/src/bin/cln_*.rs; do \
+COPY fuzzln/ fuzzln/
+COPY fuzzln-ir/ fuzzln-ir/
+COPY fuzzln-ir-mutator/ fuzzln-ir-mutator/
+COPY fuzzln-nyx-sys/ fuzzln-nyx-sys/
+COPY fuzzlnbot/ fuzzlnbot/
+COPY fuzzln-scenarios/ fuzzln-scenarios/
+RUN set -eu; for f in fuzzln-scenarios/src/bin/cln_*.rs; do \
         TARGET_MAP_SIZE=$(cat /tmp/total-map-size) \
-            cargo build -p smite-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
+            cargo build -p fuzzln-scenarios --bin "$(basename $f .rs)" --release --features nyx; \
     done
 
 # Build crash handler shared libraries, LD_PRELOADed into CLN to bypass its
@@ -144,9 +144,9 @@ RUN set -eu; for f in smite-scenarios/src/bin/cln_*.rs; do \
 # ASan from installing its own signal handlers, but ASan's compile-time
 # instrumentation still works.
 RUN clang-${LLVM_V} -fPIC -DENABLE_NYX -DCATCH_SIGNALS -DNO_PT_NYX -D_GNU_SOURCE \
-    smite-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /nyx-crash-handler.so && \
+    fuzzln-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /nyx-crash-handler.so && \
     clang-${LLVM_V} -fPIC -DCATCH_SIGNALS -D_GNU_SOURCE \
-    smite-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /crash-handler.so
+    fuzzln-nyx-sys/src/nyx-crash-handler.c -ldl -shared -o /crash-handler.so
 
 # Runtime image
 FROM debian:bookworm-slim
@@ -172,12 +172,12 @@ COPY --from=builder /usr/local/bin/bitcoin-cli /usr/local/bin/bitcoin-cli
 
 # Copy crash handlers and cln-scenario binary
 COPY --from=builder /nyx-crash-handler.so /crash-handler.so /
-COPY --from=builder /smite/target/release/cln_${SCENARIO} /cln-scenario
+COPY --from=builder /fuzzln/target/release/cln_${SCENARIO} /cln-scenario
 
 # Default to the local crash handler; init.sh overrides with the Nyx version.
 # ClnTarget forwards this as LD_PRELOAD on lightningd only, so it doesn't
 # interfere with helper processes (lightning-cli, bitcoin-cli).
-ENV SMITE_CRASH_HANDLER=/crash-handler.so
+ENV FUZZLN_CRASH_HANDLER=/crash-handler.so
 
 # ASan options for CLN binaries (instrumented with -fsanitize=address):
 #   abort_on_error=1  - call abort() on errors, triggering the crash handler

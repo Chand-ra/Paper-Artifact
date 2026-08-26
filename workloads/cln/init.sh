@@ -5,12 +5,12 @@
 set -eu
 
 # Run the CLN fuzzing harness
-export SMITE_NYX=1
+export FUZZLN_NYX=1
 export PATH=$PATH:/usr/local/bin
 
 # Override the default crash handler with the Nyx version, which reports
 # crashes via Nyx hypercalls instead of _exit(1).
-export SMITE_CRASH_HANDLER=/nyx-crash-handler.so
+export FUZZLN_CRASH_HANDLER=/nyx-crash-handler.so
 
 # ASan options for CLN binaries (instrumented with -fsanitize=address):
 #   abort_on_error=1  - call abort() on errors, triggering the crash handler

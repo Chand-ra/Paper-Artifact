@@ -1,0 +1,10 @@
+--- a/lightning/src/ln/channel.rs	2026-07-30 15:38:34.173441667 +0000
++++ b/lightning/src/ln/channel.rs	2026-07-30 15:39:37.177744768 +0000
+@@ -7678,6 +7678,7 @@
+ 				} else if self.context.counterparty_next_commitment_transaction_number == INITIAL_COMMITMENT_NUMBER - 2 {
+ 					// If we've advanced the commitment number once, the second commitment point is
+ 					// at `counterparty_current_commitment_point`, which is not yet revoked.
++                    			panic!("FUZZLN_FLAG_CHANNEL_READY");
+ 					debug_assert!(self.context.counterparty_current_commitment_point.is_some());
+ 					self.context.counterparty_current_commitment_point
+ 				} else {

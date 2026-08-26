@@ -24,7 +24,7 @@ fi
 
 SCENARIO="$1"
 CRASH_LOG="$2"
-BUILDER_IMAGE="smite-cln-${SCENARIO}-builder"
+BUILDER_IMAGE="fuzzln-cln-${SCENARIO}-builder"
 
 if [ ! -f "$CRASH_LOG" ]; then
     echo "Error: crash log '$CRASH_LOG' not found"
@@ -35,10 +35,10 @@ fi
 if ! docker image inspect "$BUILDER_IMAGE" > /dev/null 2>&1; then
     echo "Building builder stage image..." >&2
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-    SMITE_DIR="$(dirname "$SCRIPT_DIR")"
+    FUZZLN_DIR="$(dirname "$SCRIPT_DIR")"
     docker build --target builder -t "$BUILDER_IMAGE" \
         --build-arg "SCENARIO=$SCENARIO" \
-        -f "$SMITE_DIR/workloads/cln/Dockerfile" "$SMITE_DIR" > /dev/null 2>&1
+        -f "$FUZZLN_DIR/workloads/cln/Dockerfile" "$FUZZLN_DIR" > /dev/null 2>&1
 fi
 
 # Regex matching (binary+offset) in crash frames.
