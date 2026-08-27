@@ -143,13 +143,7 @@ git apply -R fuzzln-evaluation/ablation-patches/splice.patch
 
 ## Reproducing Table 2 (TTE / RQ1)
 
-1. Build the per-bug Docker images (one per bug × scenario):
-
-   ```bash
-   bash fuzzln-evaluation/docker/build_docker.sh
-   ```
-
-2. Build the ground-truth mutator variant at the `--fuzzln-dir` checkout you'll pass to
+1. Build the ground-truth mutator variant at the `--fuzzln-dir` checkout you'll pass to
    the orchestrator below. The survival orchestrator shares one `--fuzzln-dir` across
    every `--configs` label in a run, so this is the one build both the `encrypted_bytes`
    and `ir` labels below see (the `encrypted_bytes` label just never invokes it, since
@@ -163,6 +157,12 @@ git apply -R fuzzln-evaluation/ablation-patches/splice.patch
 
    See [Mutator Configurations](#mutator-configurations) above for why this is the
    correct build (5 mutators, no SpliceInsertion) for the paper's ground-truth TTE campaign.
+
+2. Build the per-bug Docker images (one per bug × scenario):
+
+   ```bash
+   bash fuzzln-evaluation/docker/build_docker.sh
+   ```
 
 3. Run the survival campaign. `--configs` maps a label to a scenario
    (`encrypted_bytes` = raw-bytes baseline, `ir` = structured IR); the paper uses one
@@ -309,12 +309,12 @@ full 24h/20-trial run, both orchestrators accept `--timeout` (seconds) and `--tr
 bug:
 
 ```bash
-bash fuzzln-evaluation/docker/build_docker.sh send_tlvs   # build only that bug's images
-
 # Build the ground-truth (5-mutator, no SpliceInsertion) variant at the checkout -- see
 # Mutator Configurations above
 git -C /path/to/fuzzln-checkout apply fuzzln-evaluation/ablation-patches/splice.patch
 cargo build --release --manifest-path /path/to/fuzzln-checkout/Cargo.toml -p fuzzln-ir-mutator
+
+bash fuzzln-evaluation/docker/build_docker.sh send_tlvs   # build only that bug's images
 
 python3 fuzzln-evaluation/orchestrator/survival-orchestrator.py \
   --out-dir /path/to/survival-out \
