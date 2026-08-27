@@ -1,6 +1,6 @@
 # FuzzLN
 
-FuzzLN is a coverage-guided fuzzing framework for Lightning Network implementations, derived from [fuzzamoto](https://github.com/dergoegge/fuzzamoto).
+FuzzLN is a coverage-guided fuzzing framework for Lightning Network implementations.
 
 ## Supported Targets
 
